@@ -22,7 +22,7 @@ POUR LUNDI: C a valider pour venir
 
 1°) Si présence marquée: sur la partie admin.
     DEUX Options générer fichier:
-        1) Génrer toutes les présences classées par date les dates
+        1) Générer toutes les présences classées par date les dates
           seront les principaux entêtes
 
         2) Option par date: l'admin saisit une date et on lui génére
