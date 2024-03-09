@@ -1,0 +1,9 @@
+baba,1,admin
+kiko,2,student
+mamadou,3,admin
+loppy,4,student
+momo,5,student
+mama,6,student
+julio,7,student
+polo,8,student
+
