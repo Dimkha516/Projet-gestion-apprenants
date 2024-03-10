@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 #define LONG_MAX 100
 #define MAX_LENGTH 100
 
@@ -21,7 +22,7 @@ void backHome()
 
 //  MARQUER PRESENCE:
 void marquerPresenceAdmin()
-{   
+{
     printf("------------------ Marquer les présences ----------------\n");
 
     FILE *listEtudiants = fopen("studentUser.txt", "r");
@@ -40,7 +41,7 @@ void marquerPresenceAdmin()
     int nbrStudent = 0; // ETUDIANT DANS LE FICHIER:
 
     while (fscanf(listEtudiants, "%s %s",
-        studentName, studentCode) == 2)
+                  studentName, studentCode) == 2)
     {
         strcpy(studentList[nbrStudent], studentCode);
         strcpy(studentList[nbrStudent + 1], studentName);
@@ -50,9 +51,8 @@ void marquerPresenceAdmin()
 
     char codeStudentSaisi[50];
     int codeValid;
-     struct tm *temps_info;
+    struct tm *temps_info;
     time_t now;
-
 
     do
     {
@@ -60,7 +60,7 @@ void marquerPresenceAdmin()
         printf(" => ");
         scanf("%s", codeStudentSaisi);
 
-        if(strcmp(codeStudentSaisi, "Q")==0)
+        if (strcmp(codeStudentSaisi, "Q") == 0)
             break;
 
         codeValid = 0;
@@ -72,7 +72,7 @@ void marquerPresenceAdmin()
                 now = time(NULL);
                 temps_info = localtime(&now);
                 char date[100];
-                
+
                 sprintf(date, "%02d/%02d/%02d", temps_info->tm_mday, temps_info->tm_mon + 1, temps_info->tm_year + 1900);
 
                 fseek(listPresences, 0, SEEK_SET);
@@ -80,25 +80,30 @@ void marquerPresenceAdmin()
                 int isSaved = 0;
 
                 char line[100];
-                while(fgets(line, sizeof(line), listPresences)!=NULL){
+                while (fgets(line, sizeof(line), listPresences) != NULL)
+                {
                     char studentNameFile[100], dateFile[100];
-                    sscanf(line,"%*[^,],%*[^,],%49[^,],%49[^,]",studentNameFile, dateFile);
-                    if(strcmp(studentNameFile, studentList[i + 1])==0 && strcmp(dateFile, date)==0){
+                    sscanf(line, "%*[^,],%*[^,],%49[^,],%49[^,]", studentNameFile, dateFile);
+                    if (strcmp(studentNameFile, studentList[i + 1]) == 0 && strcmp(dateFile, date) == 0)
+                    {
                         isSaved = 1;
                         break;
-                    } 
+                    }
                 }
-                if(isSaved){
+                if (isSaved)
+                {
                     printf("L'étudiant %s est déjà enregistré pour aujourd'hui.\n", studentList[i + 1]);
                 }
-                else{
+                else
+                {
                     printf("Présence enregistrée pour %s (code: %s) à %02d:%02d:%02d\n", studentList[i + 1], studentList[i], temps_info->tm_hour, temps_info->tm_min, temps_info->tm_sec);
                     fprintf(listPresences, "%s,%s,%02d/%02d/%02d,%02d:%02d\n", studentList[i + 1], codeStudentSaisi, temps_info->tm_mday, temps_info->tm_mon + 1, temps_info->tm_year + 1900, temps_info->tm_hour, temps_info->tm_min);
                 }
-                break;  
+                break;
             }
         }
-        if(!codeValid){
+        if (!codeValid)
+        {
             printf("Code étudiant invalide\n");
         }
 
@@ -106,8 +111,9 @@ void marquerPresenceAdmin()
     fclose(listPresences);
 }
 
-void marquerPresenceStudent(){
- printf("-------------   Marquer ma présence   ------------\n");
+void marquerPresenceStudent()
+{
+    printf("-------------   Marquer ma présence   ------------\n");
     FILE *listEtudiants = fopen("studentUser.txt", "r");
     if (listEtudiants == NULL)
     {
@@ -124,7 +130,7 @@ void marquerPresenceStudent(){
     int nbrStudent = 0; // ETUDIANT DANS LE FICHIER:
 
     while (fscanf(listEtudiants, "%s %s",
-        studentName, studentCode) == 2)
+                  studentName, studentCode) == 2)
     {
         strcpy(studentList[nbrStudent], studentCode);
         strcpy(studentList[nbrStudent + 1], studentName);
@@ -134,9 +140,8 @@ void marquerPresenceStudent(){
 
     char codeStudentSaisi[50];
     int codeValid;
-     struct tm *temps_info;
+    struct tm *temps_info;
     time_t now;
-
 
     do
     {
@@ -144,8 +149,8 @@ void marquerPresenceStudent(){
         printf(" => ");
         scanf("%s", codeStudentSaisi);
 
-       // if(strcmp(codeStudentSaisi, "Q")==0)
-           // break;
+        // if(strcmp(codeStudentSaisi, "Q")==0)
+        // break;
 
         codeValid = 0;
         for (int i = 0; i < nbrStudent; i += 2)
@@ -156,7 +161,7 @@ void marquerPresenceStudent(){
                 now = time(NULL);
                 temps_info = localtime(&now);
                 char date[100];
-                
+
                 sprintf(date, "%02d/%02d/%02d", temps_info->tm_mday, temps_info->tm_mon + 1, temps_info->tm_year + 1900);
 
                 fseek(listPresences, 0, SEEK_SET);
@@ -164,30 +169,147 @@ void marquerPresenceStudent(){
                 int isSaved = 0;
 
                 char line[100];
-                while(fgets(line, sizeof(line), listPresences)!=NULL){
+                while (fgets(line, sizeof(line), listPresences) != NULL)
+                {
                     char studentNameFile[100], dateFile[100];
-                    sscanf(line,"%*[^,],%*[^,],%49[^,],%49[^,]",studentNameFile, dateFile);
-                    if(strcmp(studentNameFile, studentList[i + 1])==0 && strcmp(dateFile, date)==0){
+                    sscanf(line, "%*[^,],%*[^,],%49[^,],%49[^,]", studentNameFile, dateFile);
+                    if (strcmp(studentNameFile, studentList[i + 1]) == 0 && strcmp(dateFile, date) == 0)
+                    {
                         isSaved = 1;
                         break;
-                    } 
+                    }
                 }
-                if(isSaved){
+                if (isSaved)
+                {
                     printf("vous vous êtes déjà enregistré pour aujourd'hui.\n");
                 }
-                else{
-                    printf("Vous êtes Présent à %02d:%02d:%02d\n",temps_info->tm_hour, temps_info->tm_min, temps_info->tm_sec);
+                else
+                {
+                    printf("Vous êtes Présent à %02d:%02d:%02d\n", temps_info->tm_hour, temps_info->tm_min, temps_info->tm_sec);
                     fprintf(listPresences, "%s,%s,%02d/%02d/%02d,%02d:%02d\n", studentList[i + 1], codeStudentSaisi, temps_info->tm_mday, temps_info->tm_mon + 1, temps_info->tm_year + 1900, temps_info->tm_hour, temps_info->tm_min);
                 }
-                break;  
+                break;
             }
         }
-        if(!codeValid){
+        if (!codeValid)
+        {
             printf("Votre code est invalide\n");
         }
 
     } while (1);
     fclose(listPresences);
+}
+// FONCTIONS POUR GÉNÉRER FICHIERS:
+void fichierToutesPresences()
+{
+    printf("--------- Voici la liste de toutes les présences : -----------\n");
+    printf("\n");
+    printf("\t");
+
+    FILE *presences = fopen("presences.txt", "r");
+    if (presences == NULL)
+    {
+        printf("Fichier Introuvable...");
+    }
+
+    char listPresence[LONG_MAX][50];
+    char presentName[50];
+    char presentCode[50];
+    int nbrPresence = 0;
+
+    while (fscanf(presences, "%s %s", presentName, presentCode) == 2)
+    {
+        // backHome();
+        strcpy(listPresence[nbrPresence], presentCode);
+        strcpy(listPresence[nbrPresence], presentCode);
+        nbrPresence += 2;
+        printf("%s\t \n\n %s\t\n\n", presentName, presentCode);
+    }
+    fclose(presences);
+
+    int backMenu;
+    printf("Taper 1 pour retourner au menu...\n");
+    printf(" => ");
+    scanf("%d", &backMenu);
+
+    while (backMenu != 1)
+    {
+        printf("Choix invalide");
+    }
+
+    if (backMenu == 1)
+    {
+        backHome();
+    }
+}
+
+void presencesParDate()
+{
+    char date[11]; // Format j/m/a (ex: 10/3/2024)
+    char line[MAX_LENGTH];
+    FILE *file;
+
+    // Demande à l'utilisateur de saisir une date
+    printf("Veuillez entrer une date au format j/m/a : ");
+    scanf("%10s", date); // Lecture de la date saisie par l'utilisateur
+
+    // Ouvre le fichier
+    file = fopen("presences.txt", "r");
+
+    if (file == NULL)
+    {
+        printf("Erreur: Impossible d'ouvrir le fichier.\n");
+    }
+
+    printf("Lignes correspondant à la date %s :\n", date);
+
+    // Parcours du fichier ligne par ligne
+    while (fgets(line, sizeof(line), file) != NULL)
+    {
+        // Vérifie si la ligne contient la date spécifiée
+        if (strstr(line, date) != NULL)
+        {
+            printf("%s", line); // Affiche la ligne si la date est trouvée
+        }
+        else
+        {
+            printf("Aucune correspondance pour cette date\n");
+        }
+    }
+
+    fclose(file); // Ferme le fichier
+}
+
+int optionsFichier()
+{
+    int option;
+    printf("---------------------GÉNÉRER FICHIER-----------------\n");
+    printf("1: TOUTES LES PRÉSENCES\n");
+    printf("2: PRÉSENCES PAR DATE\n");
+    printf(" => ");
+    scanf("%d", &option);
+
+    while (option != 1 && option != 2 && option != 0)
+    {
+        printf("Cette option est invalide réessayez\n");
+        printf("1: TOUTES LES PRÉSENCES\n");
+        printf("2: PRÉSENCES PAR DATE\n");
+        printf("0: Annuler\n");
+        printf(" => ");
+        scanf("%d", &option);
+    }
+    if (option == 1)
+    {
+        fichierToutesPresences();
+    }
+    else if (option == 2)
+    {
+        presencesParDate();
+    }
+    else
+    {
+        backHome();
+    }
 }
 
 //------------------LES DIFFERENTS MENUS:
@@ -195,12 +317,15 @@ void marquerPresenceStudent(){
 void adminMenu()
 {
     int adminOption;
-    printf("----------------BIENVENU ADMIN------------------------\n");
+    printf("\n");
+    printf("    \t----------------   INTERFACE ADMIN   ------------------------\n");
+    printf("\n");
     printf("1: GESTION DES ÉTUDIANTS\n");
     printf("2: GENERATION DE FICHIERS\n");
     printf("3: MARQUER LES PRÉSENCES\n");
     printf("4: ENVOYER UN MESSAGE\n");
     printf("5: QUITTER\n");
+    printf("\t--------------------------------------------\n");
     printf(" => ");
     scanf("%d", &adminOption);
 
@@ -210,7 +335,7 @@ void adminMenu()
         printf("Gestion des étudiant (en cours...)\n");
         break;
     case 2:
-        printf("Générer fichier (en cours...)\n");
+        optionsFichier();
         break;
     case 3:
         backHome();
@@ -233,14 +358,15 @@ void adminMenu()
 void studentMenu(void)
 {
     int studentOption;
-    printf("----------------BIENVENU APPRENANT------------------------\n");
+    printf("----------------CONNEXION APPRENANT------------------------\n");
+    printf("\n");
     printf("1: MARQUER MA PRÉSENCE\n");
     printf("2: NOMBRE DE MINUTES D'ABSENCE\n");
     printf("3: MES MESSAGES\n");
     printf("4: QUITTER\n");
     printf(" => ");
     scanf("%d", &studentOption);
-    
+
     switch (studentOption)
     {
     case 1:
@@ -260,7 +386,6 @@ void studentMenu(void)
         printf("Option invalide\n");
         break;
     }
-
 }
 
 //--------------------FONCTIONS:--------------------
@@ -268,8 +393,8 @@ void studentMenu(void)
 // SAISI ACCES:
 void saisiUserLogin()
 {
-    char userPseudoSaisi[LONG_MAX];
-    char userPassSaisi[LONG_MAX];
+    char userPseudoSaisi[5];
+    char userPassSaisi[5];
     char userProfil[LONG_MAX] = "";
     //...
     //...
@@ -283,14 +408,31 @@ void saisiUserLogin()
     if (allUsers == NULL)
         printf("Fichier introuvable");
 
-    // PARCOURS DU FICHIER POUR RECUPÉRER LE PROFIL DE L'UTILISATEUR:
-
     // SAISIE DE L'UTILISATEUR:
+
+    do
+    {
+        printf("  -----------CONNECTEZ-VOUS----------- \n");
+        
+        printf("Entrez Pseudo: ");
+        scanf("%s", userPseudoSaisi);
+        if(strlen(userPseudoSaisi)==0) printf("Le Pseudo ne peut être vide\n");
+
+        printf("Entrez mot de passe: ");
+        scanf("%s", userPassSaisi);
+        if(strlen(userPassSaisi)==0) printf("Le mot de pass ne peut être vid\n");
+
+    } while (strlen(userPseudoSaisi)==0 || strlen(userPassSaisi)==0);
+    
+    /*
     printf("  -----------CONNECTEZ-VOUS----------- \n");
     printf("Entrez Pseudo: ");
     scanf("%s", userPseudoSaisi);
     printf("Entrez mot de passe: ");
     scanf("%s", userPassSaisi);
+    */
+
+
 
     // RECHERCHE DANS LE FICHIER:
     char ligne[MAX_LENGTH * 2];
