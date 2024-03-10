@@ -11,6 +11,7 @@
 //-----------------FONCTIONS BASICS:
 
 // EFFACER LA CONSOLE:
+
 void backHome()
 {
     // #ifdef _WIN32
@@ -19,6 +20,11 @@ void backHome()
     system("clear");
     // #endif
 }
+
+//-----------------------PROTOTYPES:
+void adminMenu();
+void studentMenu();
+void saisiUserLogin();
 
 //  MARQUER PRESENCE:
 void marquerPresenceAdmin()
@@ -61,7 +67,8 @@ void marquerPresenceAdmin()
         scanf("%s", codeStudentSaisi);
 
         if (strcmp(codeStudentSaisi, "Q") == 0)
-            break;
+            adminMenu();
+        break;
 
         codeValid = 0;
         for (int i = 0; i < nbrStudent; i += 2)
@@ -240,6 +247,7 @@ void fichierToutesPresences()
     if (backMenu == 1)
     {
         backHome();
+        adminMenu();
     }
 }
 
@@ -269,11 +277,14 @@ void presencesParDate()
         // Vérifie si la ligne contient la date spécifiée
         if (strstr(line, date) != NULL)
         {
-            printf("%s", line); // Affiche la ligne si la date est trouvée
+            printf("%s", line); // Affiche la ligne si la date est
+            adminMenu();
         }
         else
         {
             printf("Aucune correspondance pour cette date\n");
+            // backHome();
+            // adminMenu();
         }
     }
 
@@ -312,6 +323,116 @@ int optionsFichier()
     }
 }
 
+void msgToAll()
+{
+    backHome();
+    char message[200];
+    int confirm;
+
+    printf("\t  Saisir message...\n ");
+    scanf("%s", message);
+
+    printf("Tapez 1 pour confirmer ou 0 pour annuler\n");
+    printf(" => ");
+    scanf("%d", &confirm);
+
+    switch (confirm)
+    {
+    case 1:
+        printf("Message envoyé à tous les étudiants avec succès\n");
+        adminMenu();
+        break;
+    case 2:
+        printf("Annulation validée\n");
+        adminMenu();
+        break;
+
+    default:
+        printf("Choix invalid\n");
+        adminMenu();
+        break;
+    }
+
+    /*
+    if (confirm == 1)
+    {
+        printf("Message envoyé à tous les étudiants avec suucès!");
+    }
+    else if (confirm == 0)
+    {
+        backHome();
+    }
+    else
+    {
+        printf("Choix invalide");
+    }
+    */ 
+}
+
+void msgToClassroom()
+{
+    backHome();
+    char classTarget[60];
+    char classRoom1[50] = ("dev-web");
+    char classRoom2[50] = ("ref-dig");
+    char classRoom3[50] = ("dev-data");
+    char message[200];
+
+    printf("Saisir la classe destinatrice (dev-web / ref-dig / dev-data) : \n");
+    printf(" => ");
+    scanf("%s", classTarget);
+
+    if (strcmp(classTarget, classRoom1) == 1 && strcmp(classTarget, classRoom2) == 1 && strcmp(classTarget, classRoom3) == 1)
+    {
+        printf("Cette classe n'existe pas");
+    }
+    else
+    {
+        printf("Saisir message pour les étudiants %s : \n", classTarget);
+        printf(" ... ");
+        scanf("%s", message);
+        printf("Message envoyé aux %s avec succès\n", classTarget);
+        adminMenu();
+    }
+
+}
+
+void msgPerso()
+{
+    backHome();
+    printf("Envoi message personnel");
+}
+
+void selectMessageType()
+{
+    int msgType;
+    printf("Choisir destinataire(s) \n");
+    printf("\t 1: Message à tous les étudiants \n");
+    printf("\t 2: Message par classe \n");
+    printf("\t 3: Message Personnel\n");
+    printf("\t => ");
+    scanf("%d", &msgType);
+
+    switch (msgType)
+    {
+    case 1:
+        msgToAll();
+        break;
+
+    case 2:
+        msgToClassroom();
+        break;
+
+    case 3:
+        msgPerso();
+        break;
+
+    default:
+        printf("Option destinataire invalide\n");
+        break;
+    }
+}
+
 //------------------LES DIFFERENTS MENUS:
 // MENU ADMIN:
 void adminMenu()
@@ -333,6 +454,8 @@ void adminMenu()
     {
     case 1:
         printf("Gestion des étudiant (en cours...)\n");
+        backHome();
+        saisiUserLogin();
         break;
     case 2:
         optionsFichier();
@@ -342,10 +465,12 @@ void adminMenu()
         marquerPresenceAdmin();
         break;
     case 4:
-        printf("Envoyer message(en cours...)\n");
+        backHome();
+        selectMessageType();
         break;
     case 5:
         backHome();
+        saisiUserLogin();
         break;
 
     default:
@@ -358,7 +483,7 @@ void adminMenu()
 void studentMenu(void)
 {
     int studentOption;
-    printf("----------------CONNEXION APPRENANT------------------------\n");
+    printf("\t--------------------  INTERFACE ÉTUDIANT  --------------------\n");
     printf("\n");
     printf("1: MARQUER MA PRÉSENCE\n");
     printf("2: NOMBRE DE MINUTES D'ABSENCE\n");
@@ -410,29 +535,13 @@ void saisiUserLogin()
 
     // SAISIE DE L'UTILISATEUR:
 
-    do
-    {
-        printf("  -----------CONNECTEZ-VOUS----------- \n");
-        
-        printf("Entrez Pseudo: ");
-        scanf("%s", userPseudoSaisi);
-        if(strlen(userPseudoSaisi)==0) printf("Le Pseudo ne peut être vide\n");
-
-        printf("Entrez mot de passe: ");
-        scanf("%s", userPassSaisi);
-        if(strlen(userPassSaisi)==0) printf("Le mot de pass ne peut être vid\n");
-
-    } while (strlen(userPseudoSaisi)==0 || strlen(userPassSaisi)==0);
-    
-    /*
     printf("  -----------CONNECTEZ-VOUS----------- \n");
+    printf("\n");
+
     printf("Entrez Pseudo: ");
     scanf("%s", userPseudoSaisi);
     printf("Entrez mot de passe: ");
     scanf("%s", userPassSaisi);
-    */
-
-
 
     // RECHERCHE DANS LE FICHIER:
     char ligne[MAX_LENGTH * 2];
@@ -487,17 +596,3 @@ void saisiUserLogin()
 
     fclose(allUsers);
 }
-
-// CONTROLE SAISI ACCES
-
-/*
-void loginValidate(char pseudo[50], int password){
-}
-*/
-
-//-----------------------------DIFFERENTS MENUS----------------------
-
-/*
-LE MOT PASSE LE CACHÉ
-MARQUER PRESENCE COTE ADMIN (entrez votre code Q pour quitter)
-*/

@@ -2,7 +2,6 @@
 #define ROOTFUNCTIONS_H
 
 //char createAdminFile();
-void saisiUserLogin();
- 
+void saisiUserLogin(); 
 
 #endif
